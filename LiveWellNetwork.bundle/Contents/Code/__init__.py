@@ -8,14 +8,14 @@ HOME_FEED = 'http://livewellnetwork.com/xml?c=livewell'
 SWT_RTRTS = 'http://livewellnetwork.com/xml?c=sweetretreats'
 FD_RSH = 'http://livewellnetwork.com/xml?c=foodrush'
 DEALS = 'http://livewellnetwork.com/xml?c=deals'
-QUIN = 'http://livewellnetwork.com/xml?c=homewithlisaquinn'
+QUINN = 'http://livewellnetwork.com/xml?c=homewithlisaquinn'
 TRAVELER = 'http://livewellnetwork.com/xml?c=traveler'
 DISH = 'http://livewellnetwork.com/xml?c=letsdish'
 LIVE_BIG = 'http://livewellnetwork.com/xml?c=livebigwithalivincent'
 WOW = 'http://livewellnetwork.com/xml?c=weowewhat'
 MEXICO = 'http://livewellnetwork.com/xml?c=mexicooneplate'
-MIRROR = 'http://livewellnetwork.com/xml?c=mirrormirror'    
-MOTION = 'http://livewellnetwork.com/xml?c=motion"    
+MIRROR = 'http://livewellnetwork.com/xml?c=mirrormirror'
+MOTION = 'http://livewellnetwork.com/xml?c=motion"
 FAMILY_RECIPE = 'http://livewellnetwork.com/xml?c=myfamilyreciperocks'
 STEVEN_CHRIS = 'http://livewellnetwork.com/xml?c=stevenandchris'
 BEST_RECIPES = 'http://livewellnetwork.com/xml?c=bestrecipesever'
@@ -31,79 +31,340 @@ def Start():
 @handler('/video/livewellnetwork', TITLE, art=ART, thumb=ICON)
 def Mainmenu():
     oc = ObjectContainer()
-    oc.add(DirectoryObject(key=Callback(Plinkett, title="Mr. Plinkett"), title="Mr. Plinkett"))
-    oc.add(DirectoryObject(key=Callback(HalfBag, title="Half in the Bag"), title="Half in the Bag"))
-    oc.add(DirectoryObject(key=Callback(BestWorst, title="Best of the Worst"), title="Best of the Worst"))
-    oc.add(DirectoryObject(key=Callback(AllShows, title="All Shows"), title="All Shows"))
+    oc.add(DirectoryObject(key=Callback(Homefeed, title="LiveWell Homepage"), title="LiveWell Homepage"))
+    oc.add(DirectoryObject(key=Callback(Swtrtrs, title="Sweet Retreats"), title="Sweet Retreats"))
+    oc.add(DirectoryObject(key=Callback(Foodrush, title="Food Rush"), title="Food Rush"))
+    oc.add(DirectoryObject(key=Callback(Deals, title="Deals"), title="Deals"))
+    oc.add(DirectoryObject(key=Callback(Quinn, title="Home with Lisa Quinn"), title="Home with Lisa Quinn"))
+    oc.add(DirectoryObject(key=Callback(Traveler, title="Laura McKenzie's Traveler"), title="Laura McKenzie's Traveler"))
+    oc.add(DirectoryObject(key=Callback(Dish, title="Let's Dish"), title="Let's Dish"))
+    oc.add(DirectoryObject(key=Callback(Livebig, title="Live Big with Ali Vincent"), title="Live Big with Ali Vincent"))
+    oc.add(DirectoryObject(key=Callback(Wow, title="We Owe What"), title="We Owe What"))
+    oc.add(DirectoryObject(key=Callback(Mexico, title="Mexico: One Plate At A Time"), title="Mexico: One Plate At A Time"))
+    oc.add(DirectoryObject(key=Callback(Mirror, title="Mirror/Mirror"), title="Mirror/Mirror"))
+    oc.add(DirectoryObject(key=Callback(Motion, title="Motion"), title="Motion"))
+    oc.add(DirectoryObject(key=Callback(Familyrecipe, title="My Family Recipe Rocks"), title="My Family Recipe Rocks"))
+    oc.add(DirectoryObject(key=Callback(Stevenchris, title="Steven and Chris"), title="Steven and Chris"))
+    oc.add(DirectoryObject(key=Callback(Bestrecipes, title="Best Recipes Ever"), title="Best Recipes Ever"))
     return oc
 
 ###################################################################################################
-@route('/video/redlettermedia/plinkett')
-def Plinkett(title):
+@route('/video/livewellnetwork/homefeed')
+def Homefeed(title):
     oc = ObjectContainer(title2=title)
 
-
-    for video in HTML.ElementFromURL(PLINKETT).xpath('//*[@id="post-main-37"]/div/p'):
-        url = video.xpath('./a')[0].get('href') #Do I need to (PLINKETT + url) some place?
-        if url[0:4] != 'http': url = PLINKETT + url # Some URLs have http and some don't. Add it to those that don't.
-  thumb = video.xpath('./a/img')[0].get('src')
-	Log(url)
-
-
-	oc.add(VideoClipObject(
-		url = url,
-		thumb = thumb))
-
-    return oc
-
-
-###################################################################################################
-@route('/video/redlettermedia/halfbag')
-def HalfBag(title):
-    oc = ObjectContainer(title2=title)
-
-
-    for video in HTML.ElementFromURL(HITB).xpath('//*[@id="post-main-515"]/div/p'):
-	url = video.xpath('./a')[0].get('href') #Pages are broken into 2013, 2012, 2011. How do I make a single list?
-	thumb = video.xpath('./a/img')[0].get('src')
-	Log(url)
-	
-	oc.add(VideoClipObject(
-		url = url,
-		thumb = thumb))
-
-    return oc
-
-###################################################################################################
-@route('/video/redlettermedia/bestworst')
-def BestWorst(title):
-    oc = ObjectContainer(title2=title)
-    Log('Some more figuring')
-
-    return oc
-
-###################################################################################################
-@route('/video/redlettermedia/allshows')
-def AllShows(title):
-    oc = ObjectContainer(title2=title)
-
-    for video in XML.ElementFromURL(RSS_FEED).xpath('//item'):
+    for video in XML.ElementFromURL(HOME_FEED).xpath('//item'):
         url = video.xpath('./link')[0].text
         title = video.xpath('./title')[0].text
         date = video.xpath('./pubDate')[0].text
         date = Datetime.ParseDate(date)
-        summary = video.xpath('./blip:puredescription', namespaces=NS)[0].text
-        thumb = video.xpath('./media:thumbnail', namespaces=NS)[0].get('url')
-        if thumb[0:4] != 'http': thumb = 'http://a.images.blip.tv' + thumb
-        duration_text = video.xpath('./blip:runtime', namespaces=NS)[0].text
-        duration = int(duration_text) * 1000
+        summary = video.xpath('./description')[0].text
+        thumb = video.xpath('./dig:url')[0].get('url')
 
         oc.add(VideoClipObject(
               url = url,
               title = title,
               summary = summary,
-              #thumb = Callback(Thumb, url=thumb),
-              duration = duration,
-              originally_available_at = date))
+              #thumb = Callback(Thumb, url=thumb)
+              ))
 
     return oc
+
+
+###################################################################################################
+@route('/video/livewellnetwork/swtrtrs')
+def Swtrtrs(title):
+    oc = ObjectContainer(title2=title)
+
+    for video in XML.ElementFromURL(SWT_RTRTS).xpath('//item'):
+        url = video.xpath('./link')[0].text
+        title = video.xpath('./title')[0].text
+        date = video.xpath('./pubDate')[0].text
+        date = Datetime.ParseDate(date)
+        summary = video.xpath('./description')[0].text
+        thumb = video.xpath('./dig:url')[0].get('url')
+
+        oc.add(VideoClipObject(
+              url = url,
+              title = title,
+              summary = summary,
+              #thumb = Callback(Thumb, url=thumb)
+              ))
+
+    return oc
+
+###################################################################################################
+@route('/video/livewellnetwork/foodrush')
+def Foodrush(title):
+    oc = ObjectContainer(title2=title)
+
+    for video in XML.ElementFromURL(FD_RSH).xpath('//item'):
+        url = video.xpath('./link')[0].text
+        title = video.xpath('./title')[0].text
+        date = video.xpath('./pubDate')[0].text
+        date = Datetime.ParseDate(date)
+        summary = video.xpath('./description')[0].text
+        thumb = video.xpath('./dig:url')[0].get('url')
+
+        oc.add(VideoClipObject(
+              url = url,
+              title = title,
+              summary = summary,
+              #thumb = Callback(Thumb, url=thumb)
+              ))
+
+    return oc
+
+###################################################################################################
+@route('/video/livewellnetwork/deals')
+def Deals(title):
+    oc = ObjectContainer(title2=title)
+
+    for video in XML.ElementFromURL(DEALS).xpath('//item'):
+        url = video.xpath('./link')[0].text
+        title = video.xpath('./title')[0].text
+        date = video.xpath('./pubDate')[0].text
+        date = Datetime.ParseDate(date)
+        summary = video.xpath('./description')[0].text
+        thumb = video.xpath('./dig:url')[0].get('url')
+
+        oc.add(VideoClipObject(
+              url = url,
+              title = title,
+              summary = summary,
+              #thumb = Callback(Thumb, url=thumb)
+              ))
+
+    return oc
+###################################################################################################
+@route('/video/livewellnetwork/quinn')
+def Quinn(title):
+    oc = ObjectContainer(title2=title)
+
+    for video in XML.ElementFromURL(QUINN).xpath('//item'):
+        url = video.xpath('./link')[0].text
+        title = video.xpath('./title')[0].text
+        date = video.xpath('./pubDate')[0].text
+        date = Datetime.ParseDate(date)
+        summary = video.xpath('./description')[0].text
+        thumb = video.xpath('./dig:url')[0].get('url')
+
+        oc.add(VideoClipObject(
+              url = url,
+              title = title,
+              summary = summary,
+              #thumb = Callback(Thumb, url=thumb)
+              ))
+
+    return oc
+###################################################################################################
+@route('/video/livewellnetwork/traveler')
+def Traveler(title):
+    oc = ObjectContainer(title2=title)
+
+    for video in XML.ElementFromURL(TRAVELER).xpath('//item'):
+        url = video.xpath('./link')[0].text
+        title = video.xpath('./title')[0].text
+        date = video.xpath('./pubDate')[0].text
+        date = Datetime.ParseDate(date)
+        summary = video.xpath('./description')[0].text
+        thumb = video.xpath('./dig:url')[0].get('url')
+
+        oc.add(VideoClipObject(
+              url = url,
+              title = title,
+              summary = summary,
+              #thumb = Callback(Thumb, url=thumb)
+              ))
+
+    return oc
+###################################################################################################
+@route('/video/livewellnetwork/dish')
+def Dish(title):
+    oc = ObjectContainer(title2=title)
+
+    for video in XML.ElementFromURL(DISH).xpath('//item'):
+        url = video.xpath('./link')[0].text
+        title = video.xpath('./title')[0].text
+        date = video.xpath('./pubDate')[0].text
+        date = Datetime.ParseDate(date)
+        summary = video.xpath('./description')[0].text
+        thumb = video.xpath('./dig:url')[0].get('url')
+
+        oc.add(VideoClipObject(
+              url = url,
+              title = title,
+              summary = summary,
+              #thumb = Callback(Thumb, url=thumb)
+              ))
+
+    return oc
+###################################################################################################
+@route('/video/livewellnetwork/livebig')
+def Livebig(title):
+    oc = ObjectContainer(title2=title)
+
+    for video in XML.ElementFromURL(LIVE_BIG).xpath('//item'):
+        url = video.xpath('./link')[0].text
+        title = video.xpath('./title')[0].text
+        date = video.xpath('./pubDate')[0].text
+        date = Datetime.ParseDate(date)
+        summary = video.xpath('./description')[0].text
+        thumb = video.xpath('./dig:url')[0].get('url')
+
+        oc.add(VideoClipObject(
+              url = url,
+              title = title,
+              summary = summary,
+              #thumb = Callback(Thumb, url=thumb)
+              ))
+
+    return oc
+###################################################################################################
+@route('/video/livewellnetwork/wow')
+def Wow(title):
+    oc = ObjectContainer(title2=title)
+
+    for video in XML.ElementFromURL(WOW).xpath('//item'):
+        url = video.xpath('./link')[0].text
+        title = video.xpath('./title')[0].text
+        date = video.xpath('./pubDate')[0].text
+        date = Datetime.ParseDate(date)
+        summary = video.xpath('./description')[0].text
+        thumb = video.xpath('./dig:url')[0].get('url')
+
+        oc.add(VideoClipObject(
+              url = url,
+              title = title,
+              summary = summary,
+              #thumb = Callback(Thumb, url=thumb)
+              ))
+
+    return oc
+###################################################################################################
+@route('/video/livewellnetwork/mexico')
+def Mexico(title):
+    oc = ObjectContainer(title2=title)
+
+    for video in XML.ElementFromURL(MEXICO).xpath('//item'):
+        url = video.xpath('./link')[0].text
+        title = video.xpath('./title')[0].text
+        date = video.xpath('./pubDate')[0].text
+        date = Datetime.ParseDate(date)
+        summary = video.xpath('./description')[0].text
+        thumb = video.xpath('./dig:url')[0].get('url')
+
+        oc.add(VideoClipObject(
+              url = url,
+              title = title,
+              summary = summary,
+              #thumb = Callback(Thumb, url=thumb)
+              ))
+
+    return oc
+###################################################################################################
+@route('/video/livewellnetwork/mirror')
+def Mirror(title):
+    oc = ObjectContainer(title2=title)
+
+    for video in XML.ElementFromURL(MIRROR).xpath('//item'):
+        url = video.xpath('./link')[0].text
+        title = video.xpath('./title')[0].text
+        date = video.xpath('./pubDate')[0].text
+        date = Datetime.ParseDate(date)
+        summary = video.xpath('./description')[0].text
+        thumb = video.xpath('./dig:url')[0].get('url')
+
+        oc.add(VideoClipObject(
+              url = url,
+              title = title,
+              summary = summary,
+              #thumb = Callback(Thumb, url=thumb)
+              ))
+
+    return oc
+###################################################################################################
+@route('/video/livewellnetwork/motion')
+def Motion(title):
+    oc = ObjectContainer(title2=title)
+
+    for video in XML.ElementFromURL(MOTION).xpath('//item'):
+        url = video.xpath('./link')[0].text
+        title = video.xpath('./title')[0].text
+        date = video.xpath('./pubDate')[0].text
+        date = Datetime.ParseDate(date)
+        summary = video.xpath('./description')[0].text
+        thumb = video.xpath('./dig:url')[0].get('url')
+
+        oc.add(VideoClipObject(
+              url = url,
+              title = title,
+              summary = summary,
+              #thumb = Callback(Thumb, url=thumb)
+              ))
+
+    return oc
+###################################################################################################
+@route('/video/livewellnetwork/familyrecipe')
+def Familyrecipe(title):
+    oc = ObjectContainer(title2=title)
+
+    for video in XML.ElementFromURL(FAMILY_RECIPE).xpath('//item'):
+        url = video.xpath('./link')[0].text
+        title = video.xpath('./title')[0].text
+        date = video.xpath('./pubDate')[0].text
+        date = Datetime.ParseDate(date)
+        summary = video.xpath('./description')[0].text
+        thumb = video.xpath('./dig:url')[0].get('url')
+
+        oc.add(VideoClipObject(
+              url = url,
+              title = title,
+              summary = summary,
+              #thumb = Callback(Thumb, url=thumb)
+              ))
+
+    return oc
+###################################################################################################
+@route('/video/livewellnetwork/stevenchris')
+def Stevenchris(title):
+    oc = ObjectContainer(title2=title)
+
+    for video in XML.ElementFromURL(STEVEN_CHRIS).xpath('//item'):
+        url = video.xpath('./link')[0].text
+        title = video.xpath('./title')[0].text
+        date = video.xpath('./pubDate')[0].text
+        date = Datetime.ParseDate(date)
+        summary = video.xpath('./description')[0].text
+        thumb = video.xpath('./dig:url')[0].get('url')
+
+        oc.add(VideoClipObject(
+              url = url,
+              title = title,
+              summary = summary,
+              #thumb = Callback(Thumb, url=thumb)
+              ))
+
+    return oc
+###################################################################################################
+@route('/video/livewellnetwork/bestrecipes')
+def Bestrecipes(title):
+    oc = ObjectContainer(title2=title)
+
+    for video in XML.ElementFromURL(BEST_RECIPES).xpath('//item'):
+        url = video.xpath('./link')[0].text
+        title = video.xpath('./title')[0].text
+        date = video.xpath('./pubDate')[0].text
+        date = Datetime.ParseDate(date)
+        summary = video.xpath('./description')[0].text
+        thumb = video.xpath('./dig:url')[0].get('url')
+
+        oc.add(VideoClipObject(
+              url = url,
+              title = title,
+              summary = summary,
+              #thumb = Callback(Thumb, url=thumb)
+              ))
+
+    return oc
+###################################################################################################
