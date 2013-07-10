@@ -4,8 +4,21 @@ ICON = 'icon-default.png'
 #NS = {'blip':'http://blip.tv/dtd/blip/1.0',
 #            'media':'http://search.yahoo.com/mrss/'}
 
-RSS_FEED = 'http://redlettermedia.blip.tv/rss'
-
+HOME_FEED = 'http://livewellnetwork.com/xml?c=livewell'
+SWT_RTRTS = 'http://livewellnetwork.com/xml?c=sweetretreats'
+FD_RSH = 'http://livewellnetwork.com/xml?c=foodrush'
+DEALS = 'http://livewellnetwork.com/xml?c=deals'
+QUIN = 'http://livewellnetwork.com/xml?c=homewithlisaquinn'
+TRAVELER = 'http://livewellnetwork.com/xml?c=traveler'
+DISH = 'http://livewellnetwork.com/xml?c=letsdish'
+LIVE_BIG = 'http://livewellnetwork.com/xml?c=livebigwithalivincent'
+WOW = 'http://livewellnetwork.com/xml?c=weowewhat'
+MEXICO = 'http://livewellnetwork.com/xml?c=mexicooneplate'
+MIRROR = 'http://livewellnetwork.com/xml?c=mirrormirror'    
+MOTION = 'http://livewellnetwork.com/xml?c=motion"    
+FAMILY_RECIPE = 'http://livewellnetwork.com/xml?c=myfamilyreciperocks'
+STEVEN_CHRIS = 'http://livewellnetwork.com/xml?c=stevenandchris'
+BEST_RECIPES = 'http://livewellnetwork.com/xml?c=bestrecipesever'
 
 ###################################################################################################
 
