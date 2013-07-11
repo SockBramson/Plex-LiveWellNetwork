@@ -1,8 +1,8 @@
 TITLE = 'LiveWell Network'
 ART = 'art-default.jpg'
 ICON = 'icon-default.png'
-#NS = {'blip':'http://blip.tv/dtd/blip/1.0',
-#            'media':'http://search.yahoo.com/mrss/'}
+NS = {'dig':'http://livewellnetwork.com/',
+            'media':'http://search.yahoo.com/mrss/'}
 
 HOME_FEED = 'http://livewellnetwork.com/xml?c=livewell'
 SWT_RTRTS = 'http://livewellnetwork.com/xml?c=sweetretreats'
@@ -15,7 +15,7 @@ LIVE_BIG = 'http://livewellnetwork.com/xml?c=livebigwithalivincent'
 WOW = 'http://livewellnetwork.com/xml?c=weowewhat'
 MEXICO = 'http://livewellnetwork.com/xml?c=mexicooneplate'
 MIRROR = 'http://livewellnetwork.com/xml?c=mirrormirror'
-MOTION = 'http://livewellnetwork.com/xml?c=motion"
+MOTION = 'http://livewellnetwork.com/xml?c=motion'
 FAMILY_RECIPE = 'http://livewellnetwork.com/xml?c=myfamilyreciperocks'
 STEVEN_CHRIS = 'http://livewellnetwork.com/xml?c=stevenandchris'
 BEST_RECIPES = 'http://livewellnetwork.com/xml?c=bestrecipesever'
@@ -59,7 +59,7 @@ def Homefeed(title):
         date = video.xpath('./pubDate')[0].text
         date = Datetime.ParseDate(date)
         summary = video.xpath('./description')[0].text
-        thumb = video.xpath('./dig:url')[0].get('url')
+        #thumb = video.xpath('./dig:url', namespaces=NS)[0].get('url')
 
         oc.add(VideoClipObject(
               url = url,
